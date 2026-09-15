@@ -1,0 +1,1249 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>בניתי עמוד נחיתה, מה עכשיו?</title>
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/jrag9ksp/image/upload/w_64,h_64,c_fill/v1786216971/BOOST%20ME/LOGOS/logo-icon-only.png">
+<style>
+@font-face {
+  font-family: 'Rubik';
+  src: local('Rubik');
+}
+
+/* ============ BOOST ME design tokens ============ */
+:root{
+  --color-magenta: #E0128B;
+  --color-orange:  #F68920;
+  --bg-page:       #F5F5F7;
+  --bg-card:       #FFFFFF;
+  --color-dark:    #1A1A1A;
+  --fg-secondary:  rgba(26,26,26,0.64);
+
+  --gradient-brand:    linear-gradient(135deg, #E0128B 0%, #F68920 100%);
+  --gradient-brand-90: linear-gradient(90deg, #E0128B 0%, #F68920 100%);
+
+  --magenta-10: rgba(224,18,139,0.10);
+  --magenta-15: rgba(224,18,139,0.15);
+  --magenta-20: rgba(224,18,139,0.20);
+
+  --pill-magenta-ink: #C41077;
+  --pill-orange-bg: rgba(246,137,32,0.16);
+  --pill-orange-ink: #8f4c0d;
+  --icon-wa: #12753a;
+  --block-num-orange: #b85f0d;
+
+  --shadow-card:     0 2px 12px rgba(0,0,0,0.08);
+  --shadow-hover:    0 6px 24px rgba(224,18,139,0.15);
+  --shadow-elevated: 0 12px 40px rgba(224,18,139,0.20);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  --code-bg: #1A1A1A;
+  --code-ink: #eae4dd;
+  --code-accent: #F68920;
+
+  --warn-bg: #fff4e6;
+  --warn-line: #F68920;
+  --warn-ink: #7a4310;
+
+  --line: rgba(26,26,26,0.10);
+}
+
+:root[data-theme="dark"]{
+  --bg-page:      #17151a;
+  --bg-card:      #221f26;
+  --color-dark:   #F5F5F7;
+  --fg-secondary: rgba(245,245,247,0.62);
+  --line: rgba(245,245,247,0.12);
+  --magenta-10: rgba(224,18,139,0.16);
+  --magenta-15: rgba(224,18,139,0.22);
+  --magenta-20: rgba(224,18,139,0.28);
+  --pill-magenta-ink: #ff5cb8;
+  --pill-orange-bg: rgba(246,137,32,0.22);
+  --pill-orange-ink: #ffb066;
+  --icon-wa: #25D366;
+  --shadow-card:     0 2px 12px rgba(0,0,0,0.35);
+  --shadow-hover:    0 6px 24px rgba(224,18,139,0.28);
+  --code-bg: #0f0d12;
+  --code-ink: #f0ece6;
+  --warn-bg: #2e2210;
+  --warn-line: #F68920;
+  --warn-ink: #ffcf8f;
+}
+
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg-page:      #17151a;
+    --bg-card:      #221f26;
+    --color-dark:   #F5F5F7;
+    --fg-secondary: rgba(245,245,247,0.62);
+    --line: rgba(245,245,247,0.12);
+    --magenta-10: rgba(224,18,139,0.16);
+    --magenta-15: rgba(224,18,139,0.22);
+    --magenta-20: rgba(224,18,139,0.28);
+    --pill-magenta-ink: #ff5cb8;
+    --pill-orange-bg: rgba(246,137,32,0.22);
+    --pill-orange-ink: #ffb066;
+    --icon-wa: #25D366;
+    --shadow-card:     0 2px 12px rgba(0,0,0,0.35);
+    --shadow-hover:    0 6px 24px rgba(224,18,139,0.28);
+    --code-bg: #0f0d12;
+    --code-ink: #f0ece6;
+    --warn-bg: #2e2210;
+    --warn-line: #F68920;
+    --warn-ink: #ffcf8f;
+  }
+}
+
+*{ box-sizing: border-box; }
+html, body{ margin:0; padding:0; }
+body{
+  direction: rtl;
+  background: var(--bg-page);
+  color: var(--color-dark);
+  font-family: 'Rubik', 'Segoe UI', Arial, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell{
+  display: grid;
+  grid-template-columns: 220px minmax(0,1fr);
+  gap: 32px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 32px 20px 100px;
+  align-items: start;
+}
+@media (max-width: 860px){
+  .shell{ grid-template-columns: 1fr; }
+  .shell{ padding-top: 20px; }
+}
+
+/* ---- Sticky side nav ---- */
+.sidenav{
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ---- Mobile: hamburger + drawer ---- */
+.nav-toggle{
+  display: none;
+}
+.nav-scrim{
+  display: none;
+}
+.nav-close{
+  display: none;
+}
+@media (max-width: 860px){
+  .nav-toggle{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: sticky;
+    top: 12px;
+    z-index: 30;
+    margin-bottom: 16px;
+    margin-inline-start: auto;
+    background: var(--bg-card);
+    color: var(--color-dark);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    padding: 10px 16px;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    box-shadow: var(--shadow-card);
+    cursor: pointer;
+  }
+  .nav-toggle svg{ width: 18px; height: 18px; }
+
+  .sidenav{
+    position: fixed;
+    inset-inline-end: 0;
+    top: 0;
+    bottom: 0;
+    width: min(78vw, 300px);
+    background: var(--bg-card);
+    padding: 24px 18px;
+    overflow-y: auto;
+    box-shadow: var(--shadow-elevated);
+    transform: translateX(-105%);
+    transition: transform 220ms ease-out;
+    z-index: 50;
+  }
+  .sidenav.open{ transform: translateX(0); }
+
+  .nav-scrim{
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms ease-out;
+    z-index: 40;
+  }
+  .nav-scrim.open{ opacity: 1; pointer-events: auto; }
+
+  .nav-close{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px; height: 32px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--color-dark);
+    cursor: pointer;
+    margin-bottom: 14px;
+    margin-inline-start: auto;
+  }
+  .nav-close svg{ width: 16px; height: 16px; }
+}
+.sidenav a{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  color: var(--fg-secondary);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: background 150ms ease-out, color 150ms ease-out;
+}
+.sidenav a:hover{ background: var(--magenta-10); color: var(--color-magenta); }
+.sidenav a .dot{
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--fg-secondary); flex-shrink: 0;
+}
+.sidenav a[data-nav="1"] .dot, .sidenav a[data-nav="2"] .dot, .sidenav a[data-nav="3"] .dot{ background: var(--color-magenta); }
+.sidenav a[data-nav="4"] .dot{ background: var(--color-orange); }
+.sidenav .nav-label{
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--fg-secondary);
+  padding: 0 12px;
+  margin: 14px 0 2px;
+}
+.sidenav .nav-label:first-child{ margin-top: 0; }
+
+.toollinks{
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.toollinks a{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  color: var(--fg-secondary);
+  text-decoration: none;
+  font-size: 12.5px;
+  transition: background 150ms ease-out, color 150ms ease-out;
+}
+.toollinks a:hover{ background: var(--magenta-10); color: var(--color-magenta); }
+.toollinks a .ext{ margin-inline-start: auto; opacity: .5; font-size: 11px; }
+.toollinks a .tool-icon{ width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; object-fit: cover; }
+
+.main{ min-width: 0; }
+
+/* ---- Header ---- */
+@property --spin-angle{
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes spin-border{
+  to{ --spin-angle: 360deg; }
+}
+.top-frame{
+  position: relative;
+  border-radius: var(--radius-lg);
+  padding: 2px;
+  margin-bottom: 36px;
+  background: conic-gradient(from var(--spin-angle), var(--color-magenta), var(--color-orange), var(--color-magenta) 50%, var(--color-orange) 75%, var(--color-magenta));
+  animation: spin-border 7s linear infinite;
+}
+@media (prefers-reduced-motion: reduce){
+  .top-frame{ animation: none; }
+}
+.top{
+  text-align: center;
+  padding: 26px 20px 30px;
+  border-radius: calc(var(--radius-lg) - 2px);
+  background: var(--bg-page);
+}
+.logo-row{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.logo-mark{
+  width: 56px; height: 56px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.logo-mark img{ width: 100%; height: 100%; object-fit: contain; }
+.logo-mark--wide{
+  width: auto; height: 64px;
+  border-radius: 0;
+}
+.logo-mark--wide img{ width: auto; height: 100%; }
+.logo-word{ font-weight: 700; font-size: 15px; letter-spacing: .02em; }
+.eyebrow{
+  font-size: 12px;
+  letter-spacing: .12em;
+  color: var(--pill-magenta-ink);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+h1{
+  font-size: clamp(28px, 4.5vw, 40px);
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 10px 0 6px;
+  text-wrap: balance;
+}
+.sub{
+  color: var(--fg-secondary);
+  font-size: 16px;
+  max-width: 55ch;
+  margin: 0 auto;
+}
+.meta-row{
+  display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+  margin-top: 20px;
+}
+.chip{
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line);
+  color: var(--fg-secondary);
+  background: var(--bg-card);
+}
+
+/* ---- Disclaimer ---- */
+.disclaimer{
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-line);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  margin-bottom: 44px;
+  color: var(--warn-ink);
+  font-size: 15px;
+}
+.disclaimer strong{ display:block; margin-bottom:4px; font-size: 15px;}
+
+/* ---- Section blocks ---- */
+.block{
+  margin-bottom: 56px;
+  scroll-margin-top: 20px;
+}
+.block-head{
+  display:flex; align-items:center; gap:14px;
+  margin-bottom: 20px;
+}
+.block-num{
+  font-weight: 700;
+  font-size: 20px;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.35);
+  background: linear-gradient(135deg, var(--color-magenta) 0%, var(--block-num-orange) 100%);
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+  box-shadow: var(--shadow-card);
+}
+.block.measure .block-num{ background: linear-gradient(135deg, var(--block-num-orange), var(--color-magenta)); }
+.block-title{
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+.block-tag{
+  font-size: 13px;
+  color: var(--fg-secondary);
+}
+
+.topic{
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 24px 28px;
+  margin-bottom: 22px;
+  transition: box-shadow 200ms ease-out;
+}
+.topic h3{
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 600;
+  display:flex; align-items:center; gap:8px;
+}
+.topic h3 .pill{
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 11px;
+  border-radius: var(--radius-pill);
+  background: var(--magenta-10);
+  color: var(--pill-magenta-ink);
+  letter-spacing: .04em;
+}
+.block.measure .topic h3 .pill{ background: var(--pill-orange-bg); color: var(--pill-orange-ink); }
+.topic p{ margin: 8px 0; color: var(--color-dark); }
+.topic p.soft{ color: var(--fg-secondary); font-size: 14.5px; }
+
+.topic ul, .topic ol{ margin: 10px 0; padding-inline-start: 22px; }
+.topic li{ margin-bottom: 5px; }
+
+.claude-label{
+  display:flex; align-items:center; gap:8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--fg-secondary);
+  margin: 18px 0 8px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.claude-label::before{
+  content: "◆";
+  color: var(--color-magenta);
+  font-size: 9px;
+}
+.block.measure .claude-label::before{ color: var(--color-orange); }
+
+.prompt-wrap{ position: relative; }
+pre.prompt{
+  background: var(--code-bg);
+  color: var(--code-ink);
+  border-radius: var(--radius-md);
+  padding: 16px 52px 16px 18px;
+  overflow-x: auto;
+  font-size: 13.5px;
+  line-height: 1.65;
+  direction: ltr;
+  text-align: left;
+  font-family: 'SF Mono', Consolas, 'Courier New', monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+}
+.copy-btn{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 30px; height: 30px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.08);
+  color: var(--code-ink);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 150ms ease-out, transform 100ms ease-in;
+}
+.copy-btn:hover{ background: rgba(255,255,255,0.16); }
+.copy-btn:active{ transform: scale(0.93); }
+.copy-btn svg{ width: 15px; height: 15px; }
+.copy-btn.copied{ background: var(--color-orange); border-color: var(--color-orange); }
+
+/* ---- Checklist ---- */
+.checklist{
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-elevated);
+  padding: 30px 32px;
+  scroll-margin-top: 20px;
+}
+.checklist-head{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+@media (max-width: 520px){
+  .checklist-head{ flex-direction: column; }
+}
+.reset-btn{
+  flex-shrink: 0;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fg-secondary);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 150ms ease-out, color 150ms ease-out, border-color 150ms ease-out;
+}
+.reset-btn:hover{ background: var(--magenta-10); color: var(--color-magenta); border-color: var(--color-magenta); }
+.checklist h2{
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+.checklist .sub{ margin: 0 0 18px; text-align: right; max-width: none; }
+.check-item{
+  display:flex; align-items:flex-start; gap:12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  font-size: 14.5px;
+}
+.check-item:first-of-type{ border-top: none; }
+.box{
+  flex-shrink:0;
+  width: 20px; height: 20px;
+  border-radius: 6px;
+  border: 2px solid var(--fg-secondary);
+  margin-top: 2px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--bg-card);
+  cursor: pointer;
+  position: relative;
+}
+.box:checked{
+  background: var(--gradient-brand);
+  border-color: var(--color-magenta);
+}
+.box:checked::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/70% no-repeat;
+}
+.box:focus-visible{
+  outline: 2px solid var(--color-magenta);
+  outline-offset: 2px;
+}
+.sidenav a:focus-visible,
+.toollinks a:focus-visible,
+.copy-btn:focus-visible,
+.nav-toggle:focus-visible,
+.nav-close:focus-visible,
+.reset-btn:focus-visible,
+.footer-wa:focus-visible{
+  outline: 2px solid var(--color-magenta);
+  outline-offset: 2px;
+}
+.copy-btn:focus-visible{ outline-color: var(--color-orange); }
+.check-item label{ cursor: pointer; }
+.check-group{
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: #fff;
+  background: linear-gradient(90deg, #C41077, #A00C60);
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  margin: 24px 0 6px;
+  display: inline-block;
+}
+.check-group:first-of-type{ margin-top: 4px; }
+
+footer{
+  text-align:center;
+  margin-top: 50px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  color: var(--fg-secondary);
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.footer-top{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.footer-wa{
+  display: inline-flex;
+  color: var(--icon-wa);
+  transition: opacity 150ms ease-out;
+}
+.footer-wa:hover{ opacity: .7; }
+.footer-wa svg{ width: 18px; height: 18px; }
+
+/* ---- Footer legal links ---- */
+.footer-legal{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 10px;
+  font-size: 12px;
+}
+.footer-legal button{
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--fg-secondary);
+  background: none;
+  border: none;
+  padding: 2px 2px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 150ms ease-out;
+}
+.footer-legal button:hover{ color: var(--color-magenta); }
+.footer-legal .dot-sep{
+  color: var(--fg-secondary);
+  opacity: .5;
+  font-size: 11px;
+}
+
+/* ---- Legal modals ---- */
+.modal-scrim{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease-out;
+}
+.modal-scrim.open{ opacity: 1; pointer-events: auto; }
+.modal-dialog{
+  background: var(--bg-card);
+  color: var(--color-dark);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-elevated);
+  padding: 30px 28px;
+  max-width: 560px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  transform: translateY(12px);
+  transition: transform 180ms ease-out;
+}
+.modal-scrim.open .modal-dialog{ transform: translateY(0); }
+.modal-head{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.modal-head h2{
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+.modal-close{
+  flex-shrink: 0;
+  width: 32px; height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--color-dark);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 150ms ease-out, color 150ms ease-out;
+}
+.modal-close:hover{ background: var(--magenta-10); color: var(--color-magenta); }
+.modal-close svg{ width: 16px; height: 16px; }
+.modal-body{ font-size: 14.5px; line-height: 1.75; }
+.modal-body p{ margin: 0 0 12px; }
+.modal-body ul{ margin: 0 0 12px; padding-inline-start: 20px; }
+.modal-body li{ margin-bottom: 5px; }
+.modal-body strong{ font-weight: 700; }
+.modal-body .modal-updated{
+  color: var(--fg-secondary);
+  font-size: 12.5px;
+  margin-top: 18px;
+  margin-bottom: 0;
+}
+.modal-close:focus-visible{
+  outline: 2px solid var(--color-magenta);
+  outline-offset: 2px;
+}
+
+@media print{
+  body{ background: white; }
+  .sidenav, .copy-btn{ display: none; }
+  .shell{ grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="sidenav">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    ניווט
+  </button>
+  <div class="nav-scrim" id="navScrim"></div>
+
+  <nav class="sidenav" id="sidenav" aria-label="ניווט בין בלוקי ההדרכה">
+    <button class="nav-close" id="navClose" type="button" aria-label="סגור ניווט">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="nav-label" id="navlabel-law">חוק וציות</div>
+    <a href="#block-1" data-nav="1"><span class="dot" aria-hidden="true"></span>1 · נגישות</a>
+    <a href="#block-2" data-nav="1"><span class="dot" aria-hidden="true"></span>2 · פרטיות</a>
+    <a href="#block-3" data-nav="1"><span class="dot" aria-hidden="true"></span>3 · תנאי שימוש</a>
+    <div class="nav-label" id="navlabel-summary">סיכום</div>
+    <a href="#checklist" data-nav="4"><span class="dot" aria-hidden="true"></span>צ'קליסט</a>
+
+    <div class="toollinks">
+      <div class="nav-label" id="navlabel-tools" style="margin:0 0 2px;">קישורים מהירים</div>
+      <a href="https://linktr.ee/boost_me" target="_blank" rel="noopener" aria-label="עוד כלי BOOST ME, נפתח בכרטיסייה חדשה"><img class="tool-icon" src="https://www.google.com/s2/favicons?domain=linktr.ee&sz=64" alt="" aria-hidden="true">עוד כלי BOOST ME<span class="ext" aria-hidden="true">↗</span></a>
+    </div>
+  </nav>
+
+  <div class="main">
+
+  <div class="top-frame">
+    <div class="top">
+      <div class="logo-row">
+        <div class="logo-mark logo-mark--wide"><img src="https://res.cloudinary.com/jrag9ksp/image/upload/v1784148893/BOOST%20ME/LOGOS/boostmelogo-rec-trans.png" alt="BOOST ME"></div>
+      </div>
+      <div class="eyebrow">הדרכת AI וכלים · 90 דקות</div>
+      <h1>בניתי עמוד נחיתה, מה עכשיו?</h1>
+      <p class="sub">מה חייב להיות בכל אתר שעולה לאוויר לקהל ישראלי — לפני שהוא באמת "גמור".</p>
+      <div class="meta-row">
+        <span class="chip">חוק וציות</span>
+        <span class="chip">פרומפטים מוכנים ל-Claude Code</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    <strong>⚠ גילוי נאות</strong>
+    כל מה שנאמר כאן הוא לא ייעוץ משפטי. זה כיוון מעשי ופרקטי — מה שבדרך כלל נדרש ואיך מטמיעים את זה טכנית. לפני עלייה לאוויר מול לקוחות אמיתיים — עורך/ת דין צריכ/ה לעבור על הנוסח הסופי של ההצהרות.
+  </div>
+
+  <!-- ===================== BLOCK 1: ACCESSIBILITY ===================== -->
+  <div class="block" id="block-1">
+    <div class="block-head">
+      <div class="block-num">1</div>
+      <div>
+        <h2 class="block-title">נגישות</h2>
+        <div class="block-tag">חוק שוויון זכויות לאנשים עם מוגבלות · WCAG 2.1 AA</div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <h3>אמל"ק <span class="pill">חוק</span></h3>
+      <p>בישראל חוק שוויון זכויות לאנשים עם מוגבלות ותקנות הנגישות מחייבות אתרים (בתנאים מסוימים, לפי היקף פעילות) לעמוד בתקן <strong>WCAG 2.1 רמה AA</strong>. גם כשאין חובה פורמלית מדויקת למקרה שלכם — זה הסטנדרט המקצועי, שיקול משפטי (תביעות נגישות נפוצות בישראל) ושיקול עסקי (יותר משתמשים = יותר לקוחות).</p>
+      <p class="soft">בפועל: ניגודיות צבעים, ניווט מקלדת מלא, alt text לתמונות, תמיכת קורא מסך (ARIA), טפסים עם labels תקינים, focus state ברור.</p>
+    </div>
+
+    <div class="topic">
+      <h3>הצהרת נגישות — מה חייב להיות בה</h3>
+      <ul>
+        <li>תאריך עדכון אחרון</li>
+        <li>רמת התאמה (בד"כ AA)</li>
+        <li>ערוץ פנייה לדיווח על בעיית נגישות + זמן מענה</li>
+        <li>שם רכז הנגישות (לפי גודל הארגון)</li>
+        <li>מה נבדק ואיך (כלי אוטומטי + בדיקה ידנית)</li>
+      </ul>
+
+      <p class="soft">⚠ שני שלבים תמיד — קודם מחקר עדכני (דרישות/סייגים/עדכוני תקנות יכולים להשתנות), רק אז בדיקה על סמך הממצאים. לא לבדוק לפי ידע כללי ישן.</p>
+
+      <div class="claude-label">שלב 1 · מחקר (עם גישה לאינטרנט)</div>
+      <div class="prompt-wrap">
+        <pre class="prompt">חפש באינטרנט את המצב העדכני של חוק/תקנות הנגישות בישראל
+לאתרי אינטרנט (חוק שוויון זכויות לאנשים עם מוגבלות, תקנות
+נגישות שירות, תקן ת"י 5568 / WCAG).
+בדוק ספציפית:
+1. מהי הרמה הנדרשת כרגע (AA? רכיבים ספציפיים?)
+2. האם יש סייגים לפי גודל עסק/היקף פעילות
+3. עדכוני תקנות או פסיקה משמעותית בשנה האחרונה
+4. מה חייב להיכלל בהצהרת נגישות לפי הדרישה הרשמית
+
+תן לי סיכום קצר עם מקורות (קישורים), לא ניחוש מזיכרון.</pre>
+        <button class="copy-btn" type="button" aria-label="העתק פרומפט"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      </div>
+
+      <div class="claude-label">שלב 2 · בדיקה, על סמך שלב 1</div>
+      <div class="prompt-wrap">
+        <pre class="prompt">לפי הממצאים שהבאת בשלב הקודם, בצע אודיט נגישות לעמוד הזה.
+בדוק ותקן כל סעיף שעלה כרלוונטי, ובפרט:
+1. ניגודיות צבעים (טקסט מול רקע)
+2. alt text תיאורי לכל &lt;img&gt;, אייקונים דקורטיביים עם alt=""
+3. ניווט מקלדת — כל אלמנט אינטראקטיבי נגיש ב-Tab, בסדר לוגי
+4. focus state ברור וגלוי
+5. ARIA labels על כפתורים/קישורים ללא טקסט גלוי
+6. קישורים עם טקסט תיאורי — לא "לחץ כאן"
+7. &lt;html lang="he" dir="rtl"&gt; מוגדר נכון
+8. היררכיית כותרות תקינה
+9. טפסים — כל &lt;input&gt; עם &lt;label&gt; מקושר
+
+תן לי רשימה של מה תוקן, מה דורש בדיקה ידנית, ואם משהו לא
+תואם למה שמצאת בשלב המחקר.</pre>
+        <button class="copy-btn" type="button" aria-label="העתק פרומפט"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      </div>
+
+      <p class="soft">⚠ בדיקה ותיקון לא מספיקים — ההצהרה חייבת להיות נגישה למבקר באתר עצמו, לא רק קיימת בקוד.</p>
+
+      <div class="claude-label">שלב 3 · חיבור בפועל לאתר</div>
+      <div class="prompt-wrap">
+        <pre class="prompt">תוסיפי לי לינק בפוטר להצהרת נגישות, ותייצרי את ההצהרה עצמה
+כפופאפ (modal) שנפתח מהלינק. תוכן ההצהרה לפי מה שסיכמנו
+בשלב המחקר. אם זה אתר רב-עמודי במקום עמוד נחיתה בודד — תבני
+אותה כעמוד נפרד עם לינק בפוטר במקום פופ-אפ.</pre>
+        <button class="copy-btn" type="button" aria-label="העתק פרומפט"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===================== BLOCK 2: PRIVACY ===================== -->
+  <div class="block" id="block-2">
+    <div class="block-head">
+      <div class="block-num">2</div>
+      <div>
+        <h2 class="block-title">פרטיות</h2>
+        <div class="block-tag">תיקון 13 לחוק הגנת הפרטיות</div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <h3>אמל"ק <span class="pill">חוק</span></h3>
+      <p>תיקון 13 (בתוקף מאוגוסט 2025) החמיר משמעותית את חוק הגנת הפרטיות: הגדרות מורחבות ל"מידע אישי", חובות אבטחת מידע, סמכויות אכיפה מוגברות לרשות להגנת הפרטיות (כולל קנסות), וחובת דיווח על אירועי אבטחה חמורים.</p>
+      <p class="soft">כל אתר שאוסף מידע — גם רק Cookies או אנליטיקס, לא רק טפסים — חשוף. GA4 בפני עצמו כבר יוצר חובת הצהרה.</p>
+    </div>
+
+    <div class="topic">
+      <h3>הצהרת פרטיות — מה צריך להיות בה</h3>
+      <ul>
+        <li>אילו נתונים נאספים (שם, טלפון, מייל, התנהגות גלישה, Cookies)</li>
+        <li>למה (מטרת האיסוף)</li>
+        <li>האם מועבר לצד ג' (GA4, וואטסאפ, כלי אוטומציה)</li>
+        <li>כמה זמן נשמר המידע</li>
+        <li>זכויות המשתמש (עיון, תיקון, מחיקה) ואיך לממש</li>
+        <li>פרטי יצירת קשר לפניות בנושא פרטיות</li>
+      </ul>
+
+      <p class="soft">⚠ תיקון 13 הרחיב הגדרות וחובות — לבדוק קודם מה המצב היום, לא לבסס על ידע כללי מיושן.</p>
+
+      <div class="claude-label">שלב 1 · מחקר (עם גישה לאינטרנט)</div>
+      <div class="prompt-wrap">
+        <pre class="prompt">חפש באינטרנט את המצב העדכני של תיקון 13 לחוק הגנת הפרטיות
+בישראל ואת הנחיות הרשות להגנת הפרטיות לגבי אתרי אינטרנט.
+בדוק ספציפית:
+1. מה נחשב "מידע אישי" בהגדרה המורחבת (Cookies/מזהי מכשיר?)
+2. חובות אבטחת מידע שחלות על אתר קטן/עסק עצמאי
+3. האם יש חובת מינוי ממונה הגנת פרטיות, ובאילו תנאים
+4. מה חייב להיכלל בהצהרת פרטיות לפי הדרישה הרשמית העדכנית
+5. חובת הסכמה מפורשת ל-Cookies (banner) ולא רק גילוי
+
+תן לי סיכום קצר עם מקורות (קישורים), לא ניחוש מזיכרון.</pre>
+        <button class="copy-btn" type="button" aria-label="העתק פרומפט"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      </div>
+
+      <div class="claude-label">שלב 2 · מיפוי בפועל, על סמך שלב 1</div>
+      <div class="prompt-wrap">
+        <pre class="prompt">לפי הממצאים שהבאת בשלב הקודם, סרוק את הפרויקט ומצא כל מקום
+שבו נאסף מידע על משתמשים:
+1. טפסים (name attributes, input fields) — אילו שדות נאספים
+2. סקריפטים של צד ג' (GTM, GA4, פיקסלים, כלי צ'אט) — מה נאסף
+3. Cookies שנקבעים (document.cookie ו-localStorage)
+4. קריאות API חיצוניות שמעבירות מידע החוצה (webhooks, CRM)
+
+תן לי רשימה: מקור המידע → סוג המידע → יעד, ותסמן אילו דורשים
+הסכמה מפורשת לפי מה שמצאת בשלב המחקר.
+אל תנסח את ההצהרה עצמה, רק מפה את זרימת המידע בפועל.</pre>
+        <button class="copy-btn" type="button" aria-label="העתק פרומפט"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      </div>
+
+      <p class="soft">⚠ אותו עיקרון כמו בנגישות — הצהרה שיושבת רק בקוד ולא נגישה למבקר לא שווה הרבה.</p>
+
+      <div class="claude-label">שלב 3 · חיבור בפועל לאתר</div>
+      <div class="prompt-wrap">
+        <pre class="prompt">תוסיפי לי לינק בפוטר למדיניות פרטיות, ותייצרי אותה כפופאפ
+(modal) שנפתח מהלינק — לפי מה שמיפינו בשלב הקודם. אם זה
+אתר רב-עמודי במקום עמוד נחיתה בודד — תבני אותה כעמוד נפרד
+עם לינק בפוטר במקום פופ-אפ.</pre>
+        <button class="copy-btn" type="button" aria-label="העתק פרומפט"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===================== BLOCK 3: TERMS ===================== -->
+  <div class="block" id="block-3">
+    <div class="block-head">
+      <div class="block-num">3</div>
+      <div>
+        <h2 class="block-title">תנאי שימוש</h2>
+        <div class="block-tag">ההגנה המשפטית שלכם</div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <h3>אמל"ק — למה זה קריטי</h3>
+      <p>בלי תנאי שימוש: אין הגבלת אחריות, אין קביעה מהו שימוש מותר/אסור באתר, אין סמכות שיפוט מוגדרת, ואין הגנה על קניין רוחני (תוכן, עיצוב, קוד). כשיש טופס לידים או תשלום — תנאי השימוש הם גם הבסיס למערכת היחסים המסחרית.</p>
+    </div>
+
+    <div class="topic">
+      <h3>מה כדאי שיהיה בהם</h3>
+      <ul>
+        <li>הגדרת השירות/המוצר</li>
+        <li>שימוש מותר ואסור באתר</li>
+        <li>הגבלת אחריות — במיוחד כשיש ייעוץ/תוכן מקצועי</li>
+        <li>זכויות קניין רוחני (תוכן, מיתוג, קוד)</li>
+        <li>מדיניות ביטולים/החזרים (אם יש תשלום)</li>
+        <li>סמכות שיפוט ודין חל (ישראל)</li>
+        <li>עדכון תנאים — איך מודיעים</li>
+      </ul>
+
+      <p class="soft">⚠ לבדוק קודם דרישות ספציפיות לתחום (מכירה מקוונת = זכות ביטול עסקה, ייעוץ מקצועי = חוקים ייעודיים) לפני כתיבת טיוטה גנרית.</p>
+
+      <div class="claude-label">שלב 1 · מחקר (עם גישה לאינטרנט)</div>
+      <div class="prompt-wrap">
+        <pre class="prompt">חפש באינטרנט מה נדרש בישראל בתנאי שימוש לאתר מסוג [תארו:
+עמוד נחיתה לשירות / חנות מקוונת / שירותי ייעוץ וכו'].
+בדוק ספציפית:
+1. האם חלים חוק הגנת הצרכן וזכות ביטול עסקה (תשלום/הזמנה מרחוק)
+2. דרישות גילוי ספציפיות לתחום (ייעוץ פיננסי/משפטי/בריאות)
+3. עד כמה ניתן להגביל אחריות בישראל
+4. תקדימים או הנחיות עדכניות לתנאי שימוש באתרים ישראליים
+
+תן לי סיכום קצר עם מקורות (קישורים), לא ניחוש מזיכרון.</pre>
+        <button class="copy-btn" type="button" aria-label="העתק פרומפט"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      </div>
+
+      <div class="claude-label">שלב 2 · כתיבת הטיוטה, על סמך שלב 1</div>
+      <div class="prompt-wrap">
+        <pre class="prompt">לפי הממצאים שהבאת בשלב הקודם, צור טיוטת דף "תנאי שימוש"
+בעברית לעמוד [שם העמוד/העסק]. כלול סעיפים ל: הגדרת השירות,
+שימוש מותר/אסור באתר, הגבלת אחריות, זכויות קניין רוחני,
+מדיניות ביטולים (אם רלוונטי לפי מה שמצאת), סמכות שיפוט
+(ישראל), יצירת קשר, ועדכון תנאים.
+
+חשוב: זו טיוטת עבודה בלבד ולא ייעוץ משפטי — סמן בבירור בראש
+הקובץ ש"טיוטה, טרם נבדקה משפטית" לפני העלאה לאוויר.</pre>
+        <button class="copy-btn" type="button" aria-label="העתק פרומפט"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      </div>
+
+      <p class="soft">⚠ גם תנאי שימוש שנשארים כטיוטה בצד לא מגנים על כלום — חייבים להיות נגישים באתר עצמו.</p>
+
+      <div class="claude-label">שלב 3 · חיבור בפועל לאתר</div>
+      <div class="prompt-wrap">
+        <pre class="prompt">תוסיפי לי לינק בפוטר לתנאי שימוש, ותייצרי אותם כפופאפ (modal)
+שנפתח מהלינק — לפי הטיוטה שכתבנו בשלב הקודם. אם זה אתר
+רב-עמודי במקום עמוד נחיתה בודד — תבני אותם כעמוד נפרד עם
+לינק בפוטר במקום פופ-אפ.</pre>
+        <button class="copy-btn" type="button" aria-label="העתק פרומפט"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===================== CHECKLIST ===================== -->
+  <div class="checklist" id="checklist">
+    <div class="checklist-head">
+      <div>
+        <h2>צ'קליסט סיום</h2>
+        <p class="sub">לעשות עכשיו, על העמוד שלכם — לא בסוף השבוע</p>
+      </div>
+      <button class="reset-btn" id="resetChecklist" type="button">אפס צ'קליסט</button>
+    </div>
+
+    <div class="check-group">1 · נגישות</div>
+    <div class="check-item"><input type="checkbox" class="box" id="c1"><label for="c1">הרצתי את פרומפט הנגישות על העמוד שלי וקיבלתי רשימת תיקונים</label></div>
+    <div class="check-item"><input type="checkbox" class="box" id="c1b"><label for="c1b">יש לי לינק בפוטר להצהרת נגישות, שנפתח כפופ-אפ (או עמוד נפרד באתר רב-עמודי)</label></div>
+
+    <div class="check-group">2 · המסגרת המשפטית — לפני שמוסיפים כלי איסוף מידע, לא אחרי</div>
+    <div class="check-item"><input type="checkbox" class="box" id="c2"><label for="c2">יש לי טיוטת הצהרת פרטיות (מסומנת "טרם נבדקה משפטית") + לינק בפוטר שפותח אותה</label></div>
+    <div class="check-item"><input type="checkbox" class="box" id="c3"><label for="c3">יש לי טיוטת תנאי שימוש (מסומנת "טרם נבדקה משפטית") + לינק בפוטר שפותח אותם</label></div>
+
+    <div class="check-group">3 · סגירת מעגל — עדכון ההצהרות לפי מה שבפועל הותקן</div>
+    <div class="check-item"><input type="checkbox" class="box" id="c12"><label for="c12">עדכנתי את הצהרת הפרטיות לפי מה שבפועל הותקן (טפסים / Cookies)</label></div>
+    <div class="check-item"><input type="checkbox" class="box" id="c13"><label for="c13">קבעתי תזכורת: לפני עלייה לאוויר בפועל — לשלוח את כל ההצהרות לעו"ד</label></div>
+  </div>
+
+  <footer>
+    <div class="footer-top">
+      GEMS × BOOST ME · בניתי עמוד נחיתה, מה עכשיו?
+      <a href="https://wa.me/972545538883" target="_blank" rel="noopener" class="footer-wa" aria-label="דברו איתנו בוואטסאפ, נפתח בכרטיסייה חדשה">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12.04 2c-5.52 0-10 4.48-10 10 0 1.76.46 3.48 1.35 5L2 22l5.14-1.35a9.96 9.96 0 0 0 4.9 1.28h.01c5.52 0 10-4.48 10-10s-4.48-9.93-10.01-9.93zm0 18.15h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.05.8.81-2.97-.2-.3a8.18 8.18 0 0 1-1.26-4.35c0-4.52 3.68-8.2 8.2-8.2 2.19 0 4.25.86 5.8 2.4a8.14 8.14 0 0 1 2.4 5.8c0 4.52-3.68 8.15-8.21 8.15zm4.5-6.13c-.25-.12-1.46-.72-1.68-.8-.23-.08-.39-.12-.56.12-.16.25-.64.8-.79.96-.14.16-.29.18-.54.06-.25-.12-1.04-.38-1.99-1.22-.73-.66-1.23-1.46-1.37-1.71-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.42-.14 0-.31-.02-.47-.02s-.43.06-.66.31c-.23.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.54.12.16 1.73 2.64 4.2 3.7.59.25 1.05.4 1.41.52.59.19 1.13.16 1.55.1.47-.07 1.46-.6 1.67-1.18.2-.58.2-1.08.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg>
+      </a>
+    </div>
+    <div class="footer-legal">
+      <button type="button" id="openA11yModal" aria-haspopup="dialog">הצהרת נגישות</button>
+      <span class="dot-sep" aria-hidden="true">·</span>
+      <button type="button" id="openPrivacyModal" aria-haspopup="dialog">מדיניות פרטיות</button>
+      <span class="dot-sep" aria-hidden="true">·</span>
+      <button type="button" id="openTermsModal" aria-haspopup="dialog">תנאי שימוש</button>
+    </div>
+  </footer>
+
+  </div>
+</div>
+
+<!-- ===================== LEGAL MODALS ===================== -->
+<div class="modal-scrim" id="a11yModal" data-modal>
+  <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="a11yModalTitle" tabindex="-1">
+    <div class="modal-head">
+      <h2 id="a11yModalTitle">הצהרת נגישות</h2>
+      <button type="button" class="modal-close" data-modal-close aria-label="סגירת הצהרת נגישות">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>הכלי הזה — "בניתי עמוד נחיתה, מה עכשיו?" — פועל להנגשה לכלל המשתמשים, לרבות אנשים עם מוגבלות, בהתאם לחוק שוויון זכויות לאנשים עם מוגבלות, התשנ"ח-1998, ולתקן הישראלי ת"י 5568.</p>
+
+      <p><strong>רמת הנגישות:</strong> הדף תוכנן ונבדק בהתאמה לרמה AA, המבוססת על הנחיות WCAG 2.1 הבינלאומיות. ההתאמות כוללות: ניגודיות צבעים תקנית בין טקסט לרקע, ניווט מלא באמצעות מקלדת (כולל תפריט הנייד והחלונות הקופצים האלו), מסגרת מיקוד (focus) ברורה, תוויות ARIA לכפתורים וקישורים, וסימון אלמנטים דקורטיביים כך שלא יפריעו לקוראי מסך.</p>
+
+      <p><strong>אופי הדף:</strong> זהו דף checklist סטטי — אין בו טפסים, אין הרשמה, ואין קוד מעקב/אנליטיקס הפועל על הדף עצמו. הסימונים (checkboxes) שמסמנים משתמשים הם אינטראקציה מקומית בלבד בדפדפן.</p>
+
+      <p><strong>פניות והנגשה חסרה:</strong> נתקלתם בבעיית נגישות בדף? נשמח שתפנו אלינו ונטפל בהקדם.</p>
+
+      <p><strong>רכזת נגישות:</strong> גל, מייל: <a href="mailto:meimagineai@gmail.com">meimagineai@gmail.com</a></p>
+
+      <p class="modal-updated">עודכן לאחרונה: 11/08/2026</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-scrim" id="privacyModal" data-modal>
+  <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="privacyModalTitle" tabindex="-1">
+    <div class="modal-head">
+      <h2 id="privacyModalTitle">מדיניות פרטיות</h2>
+      <button type="button" class="modal-close" data-modal-close aria-label="סגירת מדיניות פרטיות">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>הכלי הזה לא אוסף שום מידע אישי. אין בו טפסים, אין הרשמה, ואין קוד מעקב או אנליטיקס (GTM / GA4 / Clarity) מותקן על הדף עצמו. כל האזכורים של כלי מדידה בתוכן הדף הם חומר לימודי — הדרכה איך להטמיע אותם באתר שלכם, לא משהו שפועל כאן.</p>
+
+      <p><strong>סימוני ה-checklist:</strong> הסימונים (checkboxes) שמסמנים בדף נשמרים מקומית בדפדפן שלכם בלבד (או לא נשמרים כלל בין טעינות, תלוי במכשיר), ולא נשלחים לשום שרת ולא נצפים על ידינו.</p>
+
+      <p><strong>קישור לוואטסאפ:</strong> בפוטר יש קישור יוצא ל-WhatsApp. לחיצה עליו פותחת שיחה חיצונית באפליקציית/אתר WhatsApp — שם חלה מדיניות הפרטיות של WhatsApp/Meta, לא שלנו. אנחנו לא אוספים דרך הקישור הזה שום מידע.</p>
+
+      <p><strong>עלות:</strong> הכלי חינמי לגמרי לשימוש.</p>
+
+      <p><strong>יצירת קשר בנושאי פרטיות:</strong> <a href="mailto:meimagineai@gmail.com">meimagineai@gmail.com</a></p>
+
+      <p class="modal-updated">עודכן לאחרונה: 11/08/2026</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-scrim" id="termsModal" data-modal>
+  <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="termsModalTitle" tabindex="-1">
+    <div class="modal-head">
+      <h2 id="termsModalTitle">תנאי שימוש</h2>
+      <button type="button" class="modal-close" data-modal-close aria-label="סגירת תנאי שימוש">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>הכלי הזה — "בניתי עמוד נחיתה, מה עכשיו?" — פתוח לשימוש חופשי ואישי, ללא כל תשלום. ניתן לשתף את הקישור אליו הלאה בשמחה.</p>
+
+      <p>ניתן לעשות שימוש מלא בכל מה שמופק מהשימוש בכלי (למשל, הפרומפטים המוכנים או הצ'קליסט המסומן). עם זאת, אין למכור גישה לכלי עצמו, ואין להציע אותו כשירות בתשלום.</p>
+
+      <p>הכלי ניתן כפי שהוא (AS IS), ללא הבטחה לתפקוד מושלם או לזמינות רציפה. התוכן בו — כולל הפניות לחוק ולתקנות — הוא כיוון מעשי ופרקטי ולא ייעוץ משפטי, ועלול להכיל אי-דיוקים. האחריות על כל שימוש או החלטה הנשענים על הכלי חלה על המשתמש בלבד.</p>
+
+      <p>אנחנו לא נושאים באחריות לכל נזק, ישיר או עקיף, שייגרם כתוצאה מהשימוש בכלי.</p>
+
+      <p>אנחנו שומרים לעצמנו את הזכות לשנות את הכלי או להפסיק את השירות בכל עת וללא הודעה מוקדמת.</p>
+
+      <p><strong>יצירת קשר:</strong> <a href="mailto:meimagineai@gmail.com">meimagineai@gmail.com</a></p>
+
+      <p class="modal-updated">עודכן לאחרונה: 11/08/2026</p>
+    </div>
+  </div>
+</div>
+
+<script>
+var liveRegion = document.createElement('div');
+liveRegion.setAttribute('role', 'status');
+liveRegion.setAttribute('aria-live', 'polite');
+liveRegion.style.cssText = 'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;';
+document.body.appendChild(liveRegion);
+
+document.querySelectorAll('.copy-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var pre = btn.previousElementSibling;
+    var text = pre.textContent;
+    navigator.clipboard.writeText(text).then(function(){
+      btn.classList.add('copied');
+      btn.setAttribute('aria-label', 'הפרומפט הועתק');
+      var original = btn.innerHTML;
+      btn.innerHTML = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+      liveRegion.textContent = 'הפרומפט הועתק ללוח';
+      setTimeout(function(){
+        btn.classList.remove('copied');
+        btn.setAttribute('aria-label', 'העתק פרומפט');
+        btn.innerHTML = original;
+      }, 1600);
+    });
+  });
+});
+
+var navToggle = document.getElementById('navToggle');
+var navClose = document.getElementById('navClose');
+var navScrim = document.getElementById('navScrim');
+var sidenav = document.getElementById('sidenav');
+
+function getFocusable(container){
+  return Array.prototype.slice.call(
+    container.querySelectorAll('a[href], button:not([disabled])')
+  ).filter(function(el){ return el.offsetParent !== null; });
+}
+
+function openNav(){
+  sidenav.classList.add('open');
+  navScrim.classList.add('open');
+  navToggle.setAttribute('aria-expanded', 'true');
+  navClose.focus();
+}
+function closeNav(){
+  var wasOpen = sidenav.classList.contains('open');
+  sidenav.classList.remove('open');
+  navScrim.classList.remove('open');
+  navToggle.setAttribute('aria-expanded', 'false');
+  if(wasOpen) navToggle.focus();
+}
+if(navToggle){
+  navToggle.addEventListener('click', openNav);
+  navClose.addEventListener('click', closeNav);
+  navScrim.addEventListener('click', closeNav);
+  sidenav.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click', closeNav);
+  });
+  document.addEventListener('keydown', function(e){
+    if(!sidenav.classList.contains('open')) return;
+    if(e.key === 'Escape'){
+      closeNav();
+      return;
+    }
+    if(e.key === 'Tab'){
+      var focusable = getFocusable(sidenav);
+      if(focusable.length === 0) return;
+      var first = focusable[0];
+      var last = focusable[focusable.length - 1];
+      if(e.shiftKey && document.activeElement === first){
+        e.preventDefault();
+        last.focus();
+      } else if(!e.shiftKey && document.activeElement === last){
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  });
+}
+
+var resetBtn = document.getElementById('resetChecklist');
+if(resetBtn){
+  resetBtn.addEventListener('click', function(){
+    document.querySelectorAll('.checklist input[type="checkbox"]').forEach(function(cb){
+      cb.checked = false;
+    });
+  });
+}
+
+/* ---- Legal modals (accessibility / privacy / terms) ---- */
+var openModalEl = null;
+var modalTrigger = null;
+
+function trapTab(container, e){
+  var focusable = getFocusable(container);
+  if(focusable.length === 0) return;
+  var first = focusable[0];
+  var last = focusable[focusable.length - 1];
+  if(e.shiftKey && document.activeElement === first){
+    e.preventDefault();
+    last.focus();
+  } else if(!e.shiftKey && document.activeElement === last){
+    e.preventDefault();
+    first.focus();
+  }
+}
+
+function openModal(modal, trigger){
+  openModalEl = modal;
+  modalTrigger = trigger || document.activeElement;
+  modal.classList.add('open');
+  var dialog = modal.querySelector('.modal-dialog');
+  dialog.focus();
+}
+function closeModal(){
+  if(!openModalEl) return;
+  openModalEl.classList.remove('open');
+  openModalEl = null;
+  if(modalTrigger) modalTrigger.focus();
+  modalTrigger = null;
+}
+
+document.querySelectorAll('[data-modal]').forEach(function(modal){
+  var dialog = modal.querySelector('.modal-dialog');
+  modal.addEventListener('click', function(e){
+    if(e.target === modal) closeModal();
+  });
+  dialog.querySelector('[data-modal-close]').addEventListener('click', closeModal);
+});
+
+document.getElementById('openA11yModal').addEventListener('click', function(){
+  openModal(document.getElementById('a11yModal'), this);
+});
+document.getElementById('openPrivacyModal').addEventListener('click', function(){
+  openModal(document.getElementById('privacyModal'), this);
+});
+document.getElementById('openTermsModal').addEventListener('click', function(){
+  openModal(document.getElementById('termsModal'), this);
+});
+
+document.addEventListener('keydown', function(e){
+  if(!openModalEl) return;
+  if(e.key === 'Escape'){
+    closeModal();
+    return;
+  }
+  if(e.key === 'Tab'){
+    trapTab(openModalEl, e);
+  }
+});
+
+var sections = document.querySelectorAll('.block, .checklist');
+var navLinks = document.querySelectorAll('.sidenav a');
+var observer = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting){
+      var id = entry.target.id;
+      navLinks.forEach(function(link){
+        link.style.background = link.getAttribute('href') === '#' + id ? 'var(--magenta-10)' : '';
+        link.style.color = link.getAttribute('href') === '#' + id ? 'var(--color-magenta)' : '';
+      });
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(function(s){ observer.observe(s); });
+</script>
+</body>
+</html>
